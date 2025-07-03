@@ -4,6 +4,14 @@ import random
 import os
 import datetime
 import time
+from dotenv import load_dotenv
+
+# Load variables from .env file
+load_dotenv()
+# Read model name from environment variable
+model_name = os.getenv("MODEL_NAME")
+if not model_name:
+    raise ValueError("❌ Environment variable MODEL_NAME is not set.")
 
 import src.plea_bargain.agent as GPT
 import src.plea_bargain.prompt_plea_bargain as Data
@@ -15,7 +23,7 @@ import src.plea_bargain.data_plot as data_plot
 plt.ion()
 
 # Model Setup
-model_ver = "gpt-4-0314" #"gpt-3.5-turbo"
+model_ver = model_name
 api_key = "sk-"
 
 # Configuration

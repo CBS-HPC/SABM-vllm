@@ -9,6 +9,7 @@ from copy import deepcopy as dc
 import logging
 import pandas as pd
 import os
+from dotenv import load_dotenv
 
 # ACTIONS = {
 #     3: (-1, 0),
@@ -138,9 +139,18 @@ def n_closest_messages(agent, messages, threshold_dist=5):
 
 
 class EscapeSociety(Society):
-    def __init__(self, name, num_humans:int, agent_chat_range:int, width:int, height:int, exit_width:int=3, seed=0, need_obstacle=False, random_agent=True, is_panic=True, update_rounds=5, model="gpt-4-0314", api_key=None) -> None:
+    def __init__(self, name, num_humans:int, agent_chat_range:int, width:int, height:int, exit_width:int=3, seed=0, need_obstacle=False, random_agent=True, is_panic=True, update_rounds=5, model=None, api_key=None) -> None:
         print(locals())
         super().__init__(name, seed)
+
+        if not model:
+            # Load variables from .env file
+            load_dotenv()
+            # Read model name from environment variable
+            model = os.getenv("MODEL_NAME")
+            if not model:
+                raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+            
         random.seed(seed)
         self.agent_chat_range = agent_chat_range
         self.width = width
@@ -211,7 +221,7 @@ class EscapeSociety(Society):
                 # 'alpha5': agent.alpha5,
                 # 'alpha6': agent.alpha6,
             }
-            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True) # FIX ME: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
         df.to_csv(f"{self.output_path}/agent_info.csv", index=False)
 
     def agent_log(self):

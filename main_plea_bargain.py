@@ -1,9 +1,10 @@
 import os
 
-try:
-    api_key = os.environ["OPENAI_API_KEY"]
-except:
-    api_key = open('apikey.token').readline().strip()
+api_key = None
+#try:
+#    api_key = os.environ["OPENAI_API_KEY"]
+#except:
+#    api_key = open('apikey.token').readline().strip()
 
 from src.plea_bargain.arguments import argparser
 import src.plea_bargain.plea_bargain as plea_bargain

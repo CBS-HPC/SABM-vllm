@@ -9,6 +9,7 @@ from copy import deepcopy as dc
 import logging
 import pandas as pd
 import os
+from dotenv import load_dotenv
 
 # ACTIONS = {
 #     3: (-1, 0),
@@ -138,9 +139,19 @@ def n_closest_messages(agent, messages, threshold_dist=5):
 
 
 class EscapeSociety(Society):
-    def __init__(self, name, num_humans:int, agent_chat_range:int, width:int, height:int, exit_width:int=3, seed=0, need_obstacle=False, random_agent=True, is_panic=True, update_rounds=5, model="gpt-4-0314", api_key=None) -> None:
+    def __init__(self, name, num_humans:int, agent_chat_range:int, width:int, height:int, exit_width:int=3, seed=0, need_obstacle=False, random_agent=True, is_panic=True, update_rounds=5, model=None, api_key=None) -> None:
         print(locals())
         super().__init__(name, seed)
+
+        if not model:
+            # Load variables from .env file
+            load_dotenv()
+            # Read model name from environment variable
+            model = os.getenv("MODEL_NAME")
+            if not model:
+                raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+
+
         random.seed(seed)
         self.agent_chat_range = agent_chat_range
         self.width = width

@@ -8,6 +8,7 @@ from copy import deepcopy as dc
 import logging
 import pandas as pd
 import os
+from dotenv import load_dotenv
 
 
 class Obstacle:
@@ -98,9 +99,19 @@ def circle_points(radius, n=100):
     return [(math.cos(2 * math.pi / n * x) * radius, math.sin(2 * math.pi / n * x) * radius) for x in range(0, n+1)]
 
 class EscapeSociety(Society):
-    def __init__(self, name, num_humans:int, agent_chat_range:int, width:int, height:int, exit_width:int=3, seed=0, need_obstacle=False, random_agent=True, is_panic=True, update_rounds=5, model="gpt-4-0314", api_key=None) -> None:
+    def __init__(self, name, num_humans:int, agent_chat_range:int, width:int, height:int, exit_width:int=3, seed=0, need_obstacle=False, random_agent=True, is_panic=True, update_rounds=5, model=None, api_key=None) -> None:
         print(locals())
         super().__init__(name, seed)
+
+        if not model:
+            # Load variables from .env file
+            load_dotenv()
+            # Read model name from environment variable
+            model = os.getenv("MODEL_NAME")
+            if not model:
+                raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+
+
         self.agent_chat_range = agent_chat_range
         self.width = width
         self.height = height

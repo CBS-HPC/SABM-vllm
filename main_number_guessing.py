@@ -1,9 +1,10 @@
 import os
 
-try:
-    api_key = os.environ["OPENAI_API_KEY"]
-except:
-    api_key = open('apikey.token').readline().strip()
+api_key = None
+#try:
+#    api_key = os.environ["OPENAI_API_KEY"]
+#except:
+#    api_key = open('apikey.token').readline().strip()
 
 from src.number_guessing.arguments import argparser
 import src.number_guessing.number_guessing as number_guessing

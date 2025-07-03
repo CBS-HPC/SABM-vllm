@@ -1,9 +1,18 @@
 import os
+from dotenv import load_dotenv
 
-try:
-    api_key = os.environ["OPENAI_API_KEY"]
-except:
-    api_key = open('apikey.token').readline().strip()
+# Load variables from .env file
+load_dotenv()
+# Read model name from environment variable
+model_name = os.getenv("MODEL_NAME")
+if not model_name:
+    raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+
+api_key = None
+#try:
+#    api_key = os.environ["OPENAI_API_KEY"]
+#except:
+#    api_key = open('apikey.token').readline().strip()
 
 import numpy as np
 import pandas as pd
@@ -86,7 +95,7 @@ def main(args):
         need_obstacle=bool(args.need_obstacle),
         random_agent=bool(args.random_agent),
         is_panic=bool(args.is_panic),
-        model="gpt-4-0314",
+        model=model_name,
         api_key=api_key,
     )
     for step_count in tqdm(range(51), desc="Simulation Processing"):
@@ -122,7 +131,7 @@ def main(args):
         with open(f"output/emergency_evacuation/task{args.task}/need_obstacle_{args.need_obstacle}/{args.num_humans}humans/is_panic_{args.is_panic}_seed{args.seed}/agent_logs/agent{agent.id}_pos_history.npy", "wb") as f:
             np.save(f, agent.pos_history)
             df = pd.DataFrame(columns=agent.state_history[0].keys())
-            df = pd.concat([df, pd.DataFrame(agent.state_history)], ignore_index=True)
+            df = pd.concat([df, pd.DataFrame(agent.state_history)], ignore_index=True) # FIX ME: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
             df.to_csv(f"output/emergency_evacuation/task{args.task}/need_obstacle_{args.need_obstacle}/{args.num_humans}humans/is_panic_{args.is_panic}_seed{args.seed}/agent_chat_logs/agent{agent.id}_chat_history.csv", index=False)
 
     print("Evaluation finished. Please check `output/` folder for the results.")

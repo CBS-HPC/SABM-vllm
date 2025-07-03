@@ -1,6 +1,7 @@
 import re
-import openai
+import os
 from typing import List
+from dotenv import load_dotenv
 
 from src.firm_pricing_competition.agent_LLM_core import Agent
 from src.firm_pricing_competition.prompt import name_dict
@@ -14,11 +15,20 @@ def demand_function(a, d, beta, price, rival_price):
         else: return (a - price) / (2 * d)
 
 class Firm(Agent):
-    def __init__(self, id, cost, a, d, beta, temperature = 0.8, api_key = "", model = "gpt-3.5-turbo", max_tokens = 100):
+    def __init__(self, id, cost, a, d, beta, temperature = 0.8, api_key = "", model = None, max_tokens = 100):
+        
+        if not model:
+            # Load variables from .env file
+            load_dotenv()
+            # Read model name from environment variable
+            model = os.getenv("MODEL_NAME")
+            if not model:
+                raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+
         # API Setup
         Agent.__init__(self, temperature, model, max_tokens)
         self.api_key = api_key
-        openai.api_key = self.api_key
+        #openai.api_key = self.api_key
 
         # Simulation Setup
         ## Properties

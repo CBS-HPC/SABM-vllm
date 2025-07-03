@@ -1,5 +1,16 @@
+import os
+from dotenv import load_dotenv
+
+# Load variables from .env file
+load_dotenv()
+# Read model name from environment variable
+model_name = os.getenv("MODEL_NAME")
+if not model_name:
+    raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+
 import src.number_guessing.agent as GPT
 import src.number_guessing.prompt as prompt
+
 
 # Settings
 api_key = "sk-"
@@ -8,7 +19,7 @@ persona_type = "default"
 fixed_guess_number = False
 interpretation_guess = False
 advanced_settings = "default"
-model_ver = 'gpt-4-0613'
+model_ver = model_name
 
 # Simulation
 def simulation():

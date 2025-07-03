@@ -6,6 +6,7 @@ import datetime
 import time
 import csv
 import ast
+from dotenv import load_dotenv
 
 import src.firm_pricing_competition.agent as GPT
 import src.firm_pricing_competition.prompt as Data
@@ -15,8 +16,15 @@ import src.firm_pricing_competition.data_output as data_output
 
 plt.ion()
 
+# Load variables from .env file
+load_dotenv()
+# Read model name from environment variable
+model_name = os.getenv("MODEL_NAME")
+if not model_name:
+    raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+
 # Model Setup
-model_ver = "gpt-4-0314" # LLM here, e.g., "gpt-3.5-turbo"
+model_ver = model_name
 my_apikey1 = "sk-" # GPT API key here for firm 1
 my_apikey2 = "sk-" # GPT API key here for firm 2
 

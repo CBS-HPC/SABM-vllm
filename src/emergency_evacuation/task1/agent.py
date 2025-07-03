@@ -1,5 +1,8 @@
 from multi_agents import Agent
-import openai
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
+from openai._exceptions import RateLimitError, APIStatusError, OpenAIError
 import time
 from textwrap import dedent
 
@@ -55,35 +58,52 @@ GROUP4_ATTRIBUTES = {
     "group_id": 4,
 } 
 
-def process_response(response):
+def process_response(response): #FIX ME: Changed so it can handle a reponse like: "exit proximity: high, people count: mild, crowd density: moderate"
     # Define valid words
     valid_words = ['minimal', 'mild', 'moderate', 'high', 'extreme']
-    
-    # if response end with a period, remove it
-    if response[-1] == '.':
+
+    # Remove trailing period if present
+    if response.endswith('.'):
         response = response[:-1]
 
-    # Split the string into words by comma
-    words = [word.strip() for word in response.split(',')]
+    # Lowercase everything for comparison
+    response = response.lower()
 
+    # Split by comma, extract values after colon if present
+    words = []
+    for part in response.split(','):
+        part = part.strip()
+        if ':' in part:
+            value = part.split(':', 1)[1].strip()  # Take the part after the colon
+        else:
+            value = part
+        words.append(value)
 
-    
-    # Check if there are exactly three words
+    # Check for exactly 3 values
     if len(words) != 3:
-        return False, "Input string should contain exactly three words."
-    
-    # Check if all words are in the valid words list
+        return False, "Input must contain exactly three values."
+
+    # Validate each word
     for word in words:
         if word not in valid_words:
-            return False, f"Invalid word '{word}'. Only these words are allowed: {valid_words}"
-            
-    # If all checks pass, return the words
+            return False, f"Invalid word '{word}'. Only allowed: {valid_words}"
+
     return True, words
 
 
+
 class Human(Agent):
-    def __init__(self, id: int, pos, width, height, attribute, seed=0, history_buffer_length=10, model="gpt-4-0314", api_key=None):
+    def __init__(self, id: int, pos, width, height, attribute, seed=0, history_buffer_length=10, model=None, api_key=None):
         super().__init__(id, str(id), seed)
+
+        if not model:
+            # Load variables from .env file
+            load_dotenv()
+            # Read model name from environment variable
+            model = os.getenv("MODEL_NAME")
+            if not model:
+                raise ValueError("❌ Environment variable MODEL_NAME is not set.")
+
         self.cur_pos = pos
         self.init_pos = pos
         self.env_width = width
@@ -213,28 +233,27 @@ class Human(Agent):
         backoff_factor = 2
         current_retry = 0
 
-        openai.api_key = self.api_key
+        client = OpenAI(base_url="http://localhost:8000/v1", api_key="EMPTY")
 
         while current_retry < retries:
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model=self.model,
                     messages=[
                         {"role": "user", "content": prompt},
                         # {"role": "user", "content": ""}
                     ],
                     max_tokens=self.max_tokens,
-                    n=1,
                     temperature=self.temperature,
                     top_p=1
                 )
-                message = response['choices'][0]['message']['content'].strip().lower()
+                message = response.choices[0].message.content.strip().lower()
                 is_valid, words = process_response(message)
                 if not is_valid:
                     raise ValueError(message)
                 #print(message)
                 return words, message
-            # except openai.error.RateLimitError as e:
+            # except RateLimitError as e:
             #     if current_retry < retries - 1:
             #         wait_time = backoff_factor ** current_retry
             #         print(f"RateLimitError: Retrying in {wait_time} seconds...")
