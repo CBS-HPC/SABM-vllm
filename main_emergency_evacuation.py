@@ -130,8 +130,8 @@ def main(args):
     for agent in society.human_list:
         with open(f"output/emergency_evacuation/task{args.task}/need_obstacle_{args.need_obstacle}/{args.num_humans}humans/is_panic_{args.is_panic}_seed{args.seed}/agent_logs/agent{agent.id}_pos_history.npy", "wb") as f:
             np.save(f, agent.pos_history)
-            df = pd.DataFrame(columns=agent.state_history[0].keys())
-            df = pd.concat([df, pd.DataFrame(agent.state_history)], ignore_index=True) # FIX ME: FutureWarning: The behavior of DataFrame concatenation with empty or all-NA entries is deprecated. In a future version, this will no longer exclude empty or all-NA columns when determining the result dtypes. To retain the old behavior, exclude the relevant entries before the concat operation.
+            df = pd.DataFrame(columns=agent.state_history[0].keys()) 
+            df = pd.concat([df, pd.DataFrame(agent.state_history)], ignore_index=True)
             df.to_csv(f"output/emergency_evacuation/task{args.task}/need_obstacle_{args.need_obstacle}/{args.num_humans}humans/is_panic_{args.is_panic}_seed{args.seed}/agent_chat_logs/agent{agent.id}_chat_history.csv", index=False)
 
     print("Evaluation finished. Please check `output/` folder for the results.")

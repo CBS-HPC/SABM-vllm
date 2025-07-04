@@ -180,7 +180,9 @@ class EscapeSociety(Society):
                 'alpha5': agent.alpha5,
                 'alpha6': agent.alpha6,
             }
+
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+
         df.to_csv(f"{self.output_path}/agent_info.csv", index=False)
 
     def agent_log(self):
@@ -199,7 +201,9 @@ class EscapeSociety(Society):
                 'velocity': agent.velocity,
             })
             agent.reset_cur_state()
+
         df = pd.concat([df, pd.DataFrame(new_rows)], ignore_index=True)
+
         df.to_csv(f"{self.output_path}/agent_log.csv", index=False)
 
     
@@ -213,6 +217,7 @@ class EscapeSociety(Society):
                 'escaped_num': exit.get_escaped_num(),
                 'escaped_agents': exit.escaped_agent_list,
             })
+   
         df = pd.concat([df, pd.DataFrame(new_rows)], ignore_index=True)
         df.to_csv(f"{self.output_path}/exit_log.csv", index=False)
 
