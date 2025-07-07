@@ -52,11 +52,11 @@ bash start_model.sh llama3-8b
 
 **Available model keys:**
 
-- `llama3-8b`
-- `llama3-70b`
-- `mixtral`
-- `command-r`
-- `qwen2`
+- `llama3-70b` (meta-llama/Meta-Llama-3-70B-Instruct)
+- `llama3-8b`  (meta-llama/Meta-Llama-3-8B-Instruct)
+- `mixtral`    (mistralai/Mixtral-8x7B-Instruct-v0.1)
+- `qwen25-7b`  (Qwen/Qwen2.5-7B-Instruct)
+- `qwen2-72b`  (Qwen/Qwen2-72B-Instruct)
 
 **This will:**
 

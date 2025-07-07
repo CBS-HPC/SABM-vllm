@@ -51,7 +51,7 @@ class PersonalizedAgent:
                     model=self.model,
                     messages=[
                         {"role": "user", "content": prompt},
-                        {"role": "user", "content": ""}
+                        #{"role": "user", "content": ""} # To make work with other models
                     ],
                     max_tokens=self.max_tokens,
                     temperature=self.temperature,
