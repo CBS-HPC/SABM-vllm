@@ -14,8 +14,8 @@ It removes the dependency on OpenAI's GPT-4 API and enables reproducible experim
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/Roihn/SABM.git
-cd SABM
+git clone https://github.com/CBS-HPC/SABM-vllm.git
+cd SABM-vllm
 ```
 
 ### Create Python Environment (using `uv`)
