@@ -11,38 +11,60 @@ It removes the dependency on OpenAI's GPT-4 API and enables reproducible experim
 
 ## Setup
 
-### Environment
-
-We recommend using [`uv`](https://github.com/astral-sh/uv) to manage the Python environment:
+### Clone the Repository
 
 ```bash
 git clone https://github.com/Roihn/SABM.git
 cd SABM
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
 ```
+
+### Create Python Environment (using `uv`)
+
+We recommend using [`uv`](https://github.com/astral-sh/uv) for fast dependency management and isolated virtual environments.
+
+If you don't have `uv` installed, you can install it with:
+
+```bash
+pip install uv
+```
+
+Initialize a new `uv` project, create a virtual environment, and install the dependencies listed in `requirements.txt`:
+
+```bash
+uv init
+uv venv
+uv add -r requirements.txt
+```
+
+This will:
+
+- Initialize a new `uv` project
+- Create a virtual environment inside `.venv/`
+- Install all required Python dependencies from `requirements.txt`
+
 
 ### Hugging Face Token Setup
 
-To run models locally via Hugging Face:
-
-1. **Create a `.env` file** in the root directory:
+**Create a `.env` file** in the root directory and **Add your Hugging Face access token**:
 
 ```bash
-touch .env
+echo "HF_TOKEN=Abc" > .env
 ```
 
-2. **Add your Hugging Face access token** to the `.env` file:
-
-```env
-HF_TOKEN=hf_your_actual_token_here
+Then, **print the content of the `.env` file to verify it**:
+```bash
+cat .env
 ```
 
-3. The selected model (e.g., `meta-llama/Meta-Llama-3-8B-Instruct`) will also be written to `.env` automatically by the launch script.
 ***Please do not commit your api key to github, or share it with anyone online.**
 
 ### Launching the Local Model with vLLM
+
+Before running the model startup script, you need to define execute permissions so it can be run as a program:
+
+```bash
+chmod +x start_model.sh
+```
 
 Use the provided script to launch the model server:
 
